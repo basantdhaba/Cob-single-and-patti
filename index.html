@@ -1,1 +1,459 @@
-.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Table Version 3.1</title>
+  <style>
+    /* ========== Existing Project Styles ========== */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      padding: 10px;
+    }
+    .header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1000;
+      padding: 10px 0;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    select {
+      padding: 10px;
+      font-size: 1.2em;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 1.2em;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .game-table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 20px auto;
+      background: #ffffff;
+      padding: 10px;
+    }
+    .row {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      padding: 8px 0;
+      align-items: center;
+    }
+    .date {
+      width: 80px;
+      text-align: center;
+      font-weight: bold;
+      background-color: #f0f0f0;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bazi-results {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .bazi-box {
+      flex: 1;
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #e0e7ff;
+      margin: 5px;
+      font-size: 1.5em;
+      font-weight: bold;
+      border-radius: 5px;
+      position: relative;
+      text-align: center;
+    }
+    .wallet-container {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.2em;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .wallet {
+      font-weight: bold;
+    }
+    /* Sticky Box Container (existing) */
+    .box-container {
+      display: flex;
+      position: sticky;
+      top: 60px;
+      background-color: #f8f9fa;
+      padding: 10px 0;
+      z-index: 999;
+      justify-content: space-around;
+      gap: 10px;
+    }
+    .box {
+      background-color: #e0f7fa;
+      padding: 15px 20px;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      width: 100px;
+    }
+    .login-form {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      margin: 15px auto;
+      display: none;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    #singleSelect {
+      display: none;
+      margin-top: 10px;
+    }
+    #singleSelect button {
+      padding: 10px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #singleSelect button.selected {
+      background-color: lightblue;
+    }
+    #singleSelect input[type="number"] {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ========== Patti Functionality Styles ========== */
+    /* Prevent text selection on Patti number boxes (mobile friendly) */
+    .patti-box {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    /* Container for Patti functionality (new) */
+    #pattiContainer {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: none; /* Hidden until user clicks the Patti button */
+    }
+    /* Patti number boxes */
+    #pattiContainer #boxContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #pattiContainer .box {
+      width: 50px;
+      height: 50px;
+      border: 2px solid black;
+      text-align: center;
+      line-height: 50px;
+      margin: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+    #pattiContainer .box:hover {
+      background-color: #e0e0e0;
+    }
+    /* CP buttons and other controls inside Patti container */
+    #pattiContainer #cpButton,
+    #pattiContainer #cpOkButton,
+    #pattiContainer #submitButton,
+    #pattiContainer #clearButton {
+      padding: 10px;
+      background-color: lightgray;
+      border: 1px solid black;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    #pattiContainer #cpButton.selected {
+      background-color: #4CAF50;
+      color: white;
+    }
+    /* Display areas for CP selection and stored pattis */
+    #pattiContainer #cpSelectedDisplay,
+    #pattiContainer #storeArea,
+    #pattiContainer #amountSection {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    #pattiContainer #amountInput {
+      width: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Game Table Version 3.1</h1>
+
+  <div class="wallet-container" id="walletContainer">
+    <span class="wallet" id="walletDisplay">Wallet: $500</span>
+    <button id="addMoneyButton">Add Money</button>
+  </div>
+
+  <div class="header">
+    <select id="gameSelector">
+      <option value="kolkataFatafat">Kolkata Fatafat</option>
+      <option value="mainBazar">Main Bazar</option>
+      <option value="gmMatka">GM Matka</option>
+    </select>
+    <button id="playButton">Play</button>
+  </div>
+
+  <div class="box-container">
+    <div class="box" id="singleButton">Single</div>
+    <div class="box" id="pattiButton">Patti</div>
+    <div class="box" id="juriButton">Juri</div>
+  </div>
+
+  <div class="login-form" id="loginForm">
+    <h2>Login or Signup</h2>
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter Username">
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter Password">
+    <button id="loginButton">Login/Signup</button>
+  </div>
+
+  <div class="game-table" id="gameTable"></div>
+  <div id="singleSelect"></div>
+
+  <!-- ========== Begin Patti Functionality Container ========== -->
+  <div id="pattiContainer">
+    <!-- This container will be shown when the user clicks the Patti button -->
+    <div id="boxContainer"></div>
+    <div id="cpButton" onclick="toggleCP()">CP</div>
+    <div id="cpOkButton" onclick="cpOkButton()">CP OK</div>
+    <div id="cpSelectedDisplay">CP Selected Numbers: </div>
+    <div id="storeArea">Stored Pattis: </div>
+    <div id="amountSection">
+      <label>Enter Amount per Patti (₹): </label>
+      <input type="number" id="amountInput" min="1" value="0" />
+    </div>
+    <div id="submitButton" onclick="calculateTotal()">Submit</div>
+    <div id="clearButton" onclick="clearLastPatti()">Clear Last Patti</div>
+  </div>
+  <!-- ========== End Patti Functionality Container ========== -->
+
+  <script src="gameLogic.js"></script>
+  
+  <!-- ========== Patti Functionality JavaScript ========== -->
+  <script>
+    // Arrays for selections and storage
+    let selectedNumbers = [];    // For normal mode (expects exactly 3 numbers in ascending order)
+    let cpSelectedNumbers = [];  // For CP mode (minimum 4 numbers required)
+    let storedPattis = [];       // Final stored pattis (each is a 3-digit string)
+    let isCPMode = false;        // Flag for CP mode
+
+    // When the user clicks the Patti button in the box-container,
+    // show the pattiContainer (if not already shown)
+    document.getElementById("pattiButton").addEventListener("click", function() {
+      document.getElementById("pattiContainer").style.display = "block";
+      showPattiBoxes(); // Build the Patti functionality UI inside the pattiContainer
+    });
+
+    // Build the Patti number boxes inside pattiContainer's boxContainer
+    function showPattiBoxes() {
+      const boxContainer = document.querySelector("#pattiContainer #boxContainer");
+      boxContainer.innerHTML = ""; // Clear previous boxes
+      
+      // Create boxes for numbers 1 to 9
+      for (let i = 1; i <= 9; i++) {
+        let box = document.createElement("div");
+        box.className = "box patti-box";
+        box.textContent = i;
+        box.onclick = function() { numberClicked(i); };
+        boxContainer.appendChild(box);
+      }
+      // Create the 10th box: display as "0" but represents 10 internally
+      let boxZero = document.createElement("div");
+      boxZero.className = "box patti-box";
+      boxZero.textContent = "0";
+      boxZero.onclick = function() { numberClicked(10); };
+      boxContainer.appendChild(boxZero);
+      
+      // Show other controls inside pattiContainer
+      document.querySelector("#pattiContainer #cpButton").style.display = "inline-block";
+      document.querySelector("#pattiContainer #amountSection").style.display = "block";
+      document.querySelector("#pattiContainer #submitButton").style.display = "inline-block";
+      document.querySelector("#pattiContainer #clearButton").style.display = "inline-block";
+      document.querySelector("#pattiContainer #storeArea").style.display = "block";
+      document.querySelector("#pattiContainer #cpSelectedDisplay").style.display = "none"; // initially hide CP selected display
+      document.querySelector("#pattiContainer #cpOkButton").style.display = "none"; // initially hide CP OK button
+    }
+    
+    // Called when a Patti number box is clicked
+    function numberClicked(num) {
+      if (isCPMode) {
+        // In CP mode, allow any order; prevent duplicate selection
+        if (!cpSelectedNumbers.includes(num)) {
+          cpSelectedNumbers.push(num);
+          updateCPSelectedDisplay();
+        }
+      } else {
+        // Normal mode: allow exactly 3 numbers
+        if (selectedNumbers.length < 3) {
+          selectedNumbers.push(num);
+        }
+        if (selectedNumbers.length === 3) {
+          // Check if selected numbers are in ascending order
+          let sorted = [...selectedNumbers].sort((a, b) => a - b);
+          if (JSON.stringify(selectedNumbers) === JSON.stringify(sorted)) {
+            let patti = selectedNumbers.join("");
+            // Replace internal 10 with "0" for display
+            let pattiDisplay = patti.replace("10", "0");
+            storedPattis.push(pattiDisplay);
+            updateStoreArea();
+          } else {
+            alert("Invalid Patti! Numbers should be in ascending order.");
+          }
+          selectedNumbers = []; // Reset for next attempt
+        }
+      }
+    }
+    
+    // Update CP Selected Numbers display (in CP mode)
+    function updateCPSelectedDisplay() {
+      const cpSelectedDisplay = document.getElementById("cpSelectedDisplay");
+      let displayNumbers = cpSelectedNumbers.map(n => n === 10 ? "0" : n);
+      cpSelectedDisplay.textContent = "CP Selected Numbers: " + displayNumbers.join(", ");
+      cpSelectedDisplay.style.display = "block";
+    }
+    
+    // Update Stored Pattis display
+    function updateStoreArea() {
+      document.getElementById("storeArea").textContent = "Stored Pattis: " + storedPattis.join(", ");
+    }
+    
+    // Toggle CP mode on/off
+    function toggleCP() {
+      const cpButton = document.getElementById("cpButton");
+      const cpOkButton = document.getElementById("cpOkButton");
+      const cpSelectedDisplay = document.getElementById("cpSelectedDisplay");
+      
+      isCPMode = !isCPMode;
+      if (isCPMode) {
+        cpButton.classList.add("selected");
+        cpOkButton.style.display = "inline-block";  // Show CP OK button
+        cpSelectedDisplay.style.display = "block";    // Show CP selected display
+        // Clear any previous CP selection
+        cpSelectedNumbers = [];
+        updateCPSelectedDisplay();
+      } else {
+        cpButton.classList.remove("selected");
+        cpOkButton.style.display = "none";
+        cpSelectedDisplay.style.display = "none";
+        cpSelectedNumbers = [];
+      }
+    }
+    
+    // When CP OK is pressed, generate unique 3-digit combinations from cpSelectedNumbers.
+    function cpOkButton() {
+      if (cpSelectedNumbers.length < 4) {
+        alert("Select at least 4 numbers for CP mode.");
+        return;
+      }
+      let combinations = generateUniqueCombinations(cpSelectedNumbers);
+      // Add combinations (avoiding duplicates) to storedPattis
+      combinations.forEach(combo => {
+        if (!storedPattis.includes(combo)) {
+          storedPattis.push(combo);
+        }
+      });
+      updateStoreArea();
+      // Clear CP selection after generating combinations
+      cpSelectedNumbers = [];
+      updateCPSelectedDisplay();
+    }
+    
+    // Generate unique 3-digit combinations from an array of numbers.
+    // Each combination is sorted (ascending) and internal 10 is displayed as 0.
+    function generateUniqueCombinations(numbers) {
+      let combos = [];
+      let n = numbers.length;
+      for (let i = 0; i < n - 2; i++) {
+        for (let j = i + 1; j < n - 1; j++) {
+          for (let k = j + 1; k < n; k++) {
+            let arr = [numbers[i], numbers[j], numbers[k]].sort((a, b) => a - b);
+            let combo = arr.join("");
+            let comboDisplay = combo.replace("10", "0");
+            if (!combos.includes(comboDisplay)) {
+              combos.push(comboDisplay);
+            }
+          }
+        }
+      }
+      return combos;
+    }
+    
+    // Calculate total based on stored pattis and amount (minimum amount is 10)
+    function calculateTotal() {
+      let amountInput = parseInt(document.getElementById("amountInput").value);
+      let amountPerPatti = (amountInput < 10) ? 10 : amountInput;
+      let totalAmount = storedPattis.length * amountPerPatti;
+      alert(`Total Amount: ₹${totalAmount}`);
+      alert("Pattis submitted successfully!");
+      storedPattis = [];
+      updateStoreArea();
+    }
+    
+    // Clear the last stored patti
+    function clearLastPatti() {
+      if (storedPattis.length > 0) {
+        storedPattis.pop();
+        updateStoreArea();
+      } else {
+        alert("No Patti to clear!");
+      }
+    }
+  </script>
+</body>
+</html>
