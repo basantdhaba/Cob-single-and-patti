@@ -168,15 +168,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ========= Patti Functionality =========
-    // The Patti container (id="pattiContainer") is assumed to exist in the HTML.
     function showPattiContainer() {
         const pattiContainer = document.getElementById('pattiContainer');
         pattiContainer.style.display = 'block';
         pattiContainer.innerHTML = ''; // Clear previous content
 
-        // Build Patti number boxes container (arranged horizontally in one line)
+        // Build Patti number boxes container (arranged horizontally in one line without scrolling)
         const boxContainer = document.createElement('div');
         boxContainer.id = 'pattiBoxContainer';
+        // Removed overflow-x:auto for no scrolling; boxes will wrap if necessary
+        boxContainer.style.display = 'flex';
+        boxContainer.style.gap = '10px';
+        boxContainer.style.marginBottom = '15px';
         pattiContainer.appendChild(boxContainer);
 
         // Create boxes for numbers 1 to 9
@@ -199,11 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pattiNumberClicked(10);
         });
         boxContainer.appendChild(boxZero);
-
-        // Ensure the boxes appear in one horizontal line
-        boxContainer.style.display = 'flex';
-        boxContainer.style.flexWrap = 'nowrap';
-        boxContainer.style.overflowX = 'auto';
 
         // Patti CP Controls
         const cpButton = document.createElement('div');
@@ -301,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         storedDisplay.textContent = 'Stored Pattis: ' + pattiStored.join(', ');
     }
 
-    // Toggle CP mode in Patti area
+    // Toggle Patti CP mode
     function togglePattiCP() {
         const cpButton = document.getElementById('pattiCpButton');
         const cpOkButton = document.getElementById('pattiCpOkButton');
