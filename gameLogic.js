@@ -3,14 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let wallet = 500;
     let isLoggedIn = false;
 
-    // For Single selection
+    // Single selection container
     const singleSelectDiv = document.getElementById('singleSelect');
 
-    // For Patti functionality (normal mode & CP mode)
-    let pattiSelectedNumbers = [];     // For normal Patti mode (exactly 3 numbers in ascending order)
-    let cpSelectedNumbers = [];        // For CP mode (user must select at least 4 numbers)
-    let pattiStored = [];              // Final stored Patti entries (each a 3-digit string)
-    let isCPMode = false;              // Flag for CP mode in the Patti section
+    // Variables for Patti functionality
+    let pattiSelectedNumbers = [];  // For normal Patti (3 numbers in ascending order)
+    let cpSelectedNumbers = [];     // For CP mode (minimum 4 required)
+    let pattiStored = [];           // Final stored Patti entries (3-digit strings)
+    let isCPMode = false;           // Flag for CP mode in Patti area
 
     // ========= Existing Functions =========
     function showWallet() {
@@ -28,18 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('loginForm').style.display = 'none';
     }
 
-    // ========= Event Listeners for Login and Wallet =========
+    // ========= Event Listeners for Login and Navigation =========
     document.getElementById('playButton').addEventListener('click', showLoginForm);
     document.getElementById('singleButton').addEventListener('click', () => {
         showLoginForm();
         if (isLoggedIn) {
+            // Hide Patti area if open
+            document.getElementById('pattiContainer').style.display = 'none';
             showSingleSelection();
         }
     });
     document.getElementById('pattiButton').addEventListener('click', () => {
         showLoginForm();
         if (isLoggedIn) {
-            showPattiContainer(); // Build and display the Patti functional area
+            // Hide Single area if open
+            singleSelectDiv.style.display = 'none';
+            showPattiContainer();
         }
     });
     document.getElementById('juriButton').addEventListener('click', showLoginForm);
@@ -123,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     populateTable(gameSelector.value);
 
-    // ========= Single Number Selection Functionality =========
+    // ========= Single Number Selection =========
     function showSingleSelection() {
         singleSelectDiv.style.display = 'block';
         singleSelectDiv.innerHTML = ''; // Clear previous selections
@@ -164,67 +168,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ========= Patti Functionality =========
-    // The Patti container (with id="pattiContainer") should already exist in your HTML.
-    // This functionality builds the Patti UI (number boxes, CP mode, etc.) dynamically.
+    // The Patti container (id="pattiContainer") is assumed to exist in the HTML.
     function showPattiContainer() {
         const pattiContainer = document.getElementById('pattiContainer');
         pattiContainer.style.display = 'block';
-        // Clear any previous content in the Patti container
-        pattiContainer.innerHTML = '';
+        pattiContainer.innerHTML = ''; // Clear previous content
 
-        // Create a sub-container for the Patti number boxes
+        // Build Patti number boxes container
         const boxContainer = document.createElement('div');
         boxContainer.id = 'pattiBoxContainer';
-        // (Optional: add styling classes as needed)
         pattiContainer.appendChild(boxContainer);
 
-        // Build Patti number boxes: numbers 1 to 9 and a box shown as "0" (represents 10 internally)
+        // Create boxes for numbers 1 to 9
         for (let i = 1; i <= 9; i++) {
             const box = document.createElement('div');
-            box.className = 'box';  // reusing your existing .box style
+            box.className = 'box';
             box.textContent = i;
             box.addEventListener('click', () => {
                 pattiNumberClicked(i);
             });
             boxContainer.appendChild(box);
         }
+        // Create box for "0" (represents 10 internally)
         const boxZero = document.createElement('div');
         boxZero.className = 'box';
         boxZero.textContent = '0';
         boxZero.addEventListener('click', () => {
-            pattiNumberClicked(10);  // internally treat as 10
+            pattiNumberClicked(10);
         });
         boxContainer.appendChild(boxZero);
 
-        // Create CP mode controls
+        // Patti CP Controls
         const cpButton = document.createElement('div');
         cpButton.id = 'pattiCpButton';
         cpButton.textContent = 'CP';
-        cpButton.style.cursor = 'pointer';
-        cpButton.style.padding = '10px';
-        cpButton.style.backgroundColor = 'lightgray';
-        cpButton.style.border = '1px solid black';
         cpButton.addEventListener('click', togglePattiCP);
         pattiContainer.appendChild(cpButton);
 
         const cpOkButton = document.createElement('div');
         cpOkButton.id = 'pattiCpOkButton';
         cpOkButton.textContent = 'CP OK';
-        cpOkButton.style.cursor = 'pointer';
-        cpOkButton.style.padding = '10px';
-        cpOkButton.style.backgroundColor = 'lightgray';
-        cpOkButton.style.border = '1px solid black';
-        cpOkButton.style.display = 'none'; // initially hidden
+        cpOkButton.style.display = 'none';
         cpOkButton.addEventListener('click', pattiCpOk);
         pattiContainer.appendChild(cpOkButton);
 
-        // Display area for CP selected numbers
+        // Display for CP Selected Numbers
         const cpSelectedDisplay = document.createElement('div');
         cpSelectedDisplay.id = 'pattiCpSelectedDisplay';
         cpSelectedDisplay.style.display = 'none';
         pattiContainer.appendChild(cpSelectedDisplay);
 
-        // Stored Pattis display (reuse id "storeArea" if you like, or create a new one)
+        // Stored Pattis Display
         const storedDisplay = document.createElement('div');
         storedDisplay.id = 'pattiStoreArea';
         storedDisplay.style.marginTop = '10px';
@@ -232,10 +226,9 @@ document.addEventListener('DOMContentLoaded', () => {
         storedDisplay.textContent = 'Stored Pattis: ' + pattiStored.join(', ');
         pattiContainer.appendChild(storedDisplay);
 
-        // Amount input section
+        // Amount input section for Patti
         const amountSection = document.createElement('div');
         amountSection.id = 'pattiAmountSection';
-        amountSection.style.marginTop = '10px';
         amountSection.innerHTML = '<label>Enter Amount per Patti (₹): </label>';
         const amountInput = document.createElement('input');
         amountInput.type = 'number';
@@ -245,44 +238,34 @@ document.addEventListener('DOMContentLoaded', () => {
         amountSection.appendChild(amountInput);
         pattiContainer.appendChild(amountSection);
 
-        // Submit and Clear buttons for Patti
+        // Patti Submit and Clear buttons
         const submitButton = document.createElement('div');
         submitButton.id = 'pattiSubmitButton';
         submitButton.textContent = 'Submit';
-        submitButton.style.cursor = 'pointer';
-        submitButton.style.padding = '10px';
-        submitButton.style.backgroundColor = 'lightgray';
-        submitButton.style.border = '1px solid black';
         submitButton.addEventListener('click', pattiCalculateTotal);
         pattiContainer.appendChild(submitButton);
 
         const clearButton = document.createElement('div');
         clearButton.id = 'pattiClearButton';
         clearButton.textContent = 'Clear Last Patti';
-        clearButton.style.cursor = 'pointer';
-        clearButton.style.padding = '10px';
-        clearButton.style.backgroundColor = 'lightgray';
-        clearButton.style.border = '1px solid black';
         clearButton.addEventListener('click', pattiClearLast);
         pattiContainer.appendChild(clearButton);
 
-        // Reset any previously stored Patti selections for a fresh start.
+        // Reset Patti variables for a fresh start.
         pattiSelectedNumbers = [];
         cpSelectedNumbers = [];
         pattiStored = [];
         isCPMode = false;
     }
 
-    // Handler when a Patti number box is clicked
+    // Patti number click handler
     function pattiNumberClicked(num) {
         if (isCPMode) {
-            // In CP mode, allow selection in any order (prevent duplicate)
             if (!cpSelectedNumbers.includes(num)) {
                 cpSelectedNumbers.push(num);
                 updatePattiCpSelectedDisplay();
             }
         } else {
-            // Normal Patti mode: user selects exactly 3 numbers
             if (pattiSelectedNumbers.length < 3) {
                 pattiSelectedNumbers.push(num);
             }
@@ -301,13 +284,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update stored Patti display in the Patti container
+    // Update Patti stored display
     function updatePattiStoreArea() {
         const storedDisplay = document.getElementById('pattiStoreArea');
         storedDisplay.textContent = 'Stored Pattis: ' + pattiStored.join(', ');
     }
 
-    // Toggle CP mode for Patti selection
+    // Toggle Patti CP mode
     function togglePattiCP() {
         const cpButton = document.getElementById('pattiCpButton');
         const cpOkButton = document.getElementById('pattiCpOkButton');
@@ -327,14 +310,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update CP selected numbers display for Patti
+    // Update CP selected display in Patti area
     function updatePattiCpSelectedDisplay() {
         const cpSelectedDisplay = document.getElementById('pattiCpSelectedDisplay');
         let displayNumbers = cpSelectedNumbers.map(n => n === 10 ? '0' : n);
         cpSelectedDisplay.textContent = 'CP Selected Numbers: ' + displayNumbers.join(', ');
     }
 
-    // When CP OK is pressed, generate unique 3-digit combinations from cpSelectedNumbers.
+    // When CP OK is pressed in Patti area, generate unique 3-digit combinations
     function pattiCpOk() {
         if (cpSelectedNumbers.length < 4) {
             alert('Select at least 4 numbers for CP mode.');
@@ -351,8 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePattiCpSelectedDisplay();
     }
 
-    // Generate unique 3-digit combinations from an array of numbers.
-    // Each combination is sorted (ascending) and internal '10' is displayed as '0'.
+    // Generate unique 3-digit combinations from an array of numbers
     function generateUniqueCombinations(numbers) {
         let combos = [];
         let n = numbers.length;
@@ -388,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Clear the last stored Patti entry
+    // Clear the last Patti entry
     function pattiClearLast() {
         if (pattiStored.length > 0) {
             pattiStored.pop();
@@ -398,64 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ========= End Patti Functionality =========
-
-    // ========= Existing Single Number Selection =========
-    document.getElementById('singleButton').addEventListener('click', () => {
-        showLoginForm();
-        if (isLoggedIn) {
-            showSingleSelection();
-        }
-    });
-
-    function showSingleSelection() {
-        singleSelectDiv.style.display = 'block';
-        singleSelectDiv.innerHTML = ''; // Clear previous numbers
-        for (let i = 0; i <= 9; i++) {
-            const numButton = document.createElement('button');
-            numButton.textContent = i;
-            numButton.classList.add('singleNumButton');
-            numButton.addEventListener('click', () => {
-                numButton.classList.toggle('selected');
-            });
-            singleSelectDiv.appendChild(numButton);
-        }
-        const amountInput = document.createElement('input');
-        amountInput.type = 'number';
-        amountInput.placeholder = 'Enter Amount';
-        singleSelectDiv.appendChild(amountInput);
-        const submitButton = document.createElement('button');
-        submitButton.textContent = 'Submit';
-        submitButton.addEventListener('click', () => {
-            const selectedNumbers = singleSelectDiv.querySelectorAll('.singleNumButton.selected');
-            const selectedValues = Array.from(selectedNumbers).map(btn => parseInt(btn.textContent));
-            const amount = parseInt(amountInput.value);
-            if (selectedValues.length > 0 && !isNaN(amount) && amount > 0) {
-                const totalAmount = selectedValues.length * amount;
-                if (wallet >= totalAmount) {
-                    wallet -= totalAmount;
-                    document.getElementById('walletDisplay').textContent = `Wallet: $${wallet}`;
-                    alert(`Bet placed for ${selectedValues.join(', ')} with amount $${amount} each. Total deducted: $${totalAmount}`);
-                    singleSelectDiv.style.display = 'none';
-                } else {
-                    alert("Insufficient wallet balance.");
-                }
-            } else {
-                alert("Please select at least one number and enter a valid amount.");
-            }
-        });
-        singleSelectDiv.appendChild(submitButton);
-    }
-
     // ========= Modify Existing Button Listeners =========
-    document.getElementById('pattiButton').addEventListener('click', () => {
-        showLoginForm();
-        if (isLoggedIn) {
-            // Instead of alerting, show the Patti functionality container.
-            showPattiContainer();
-        }
-    });
-
     document.getElementById('juriButton').addEventListener('click', () => {
         showLoginForm();
         if (isLoggedIn) {
