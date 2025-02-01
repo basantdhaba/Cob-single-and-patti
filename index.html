@@ -2,230 +2,295 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Table Version 3.1</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Table Version 3.1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
 
-        h1 {
-            text-align: center;
-            font-size: 2em;
-            padding: 10px;
-        }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      padding: 10px;
+    }
 
-        .header {
-            position: sticky;
-            top: 0;
-            background: #fff;
-            z-index: 1000;
-            padding: 10px 0;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+    .header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1000;
+      padding: 10px 0;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
 
-        select {
-            padding: 10px;
-            font-size: 1.2em;
-        }
+    select {
+      padding: 10px;
+      font-size: 1.2em;
+    }
 
-        button {
-            padding: 10px 15px;
-            font-size: 1.2em;
-            cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-        }
+    button {
+      padding: 10px 15px;
+      font-size: 1.2em;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
 
-        button:hover {
-            background-color: #0056b3;
-        }
+    button:hover {
+      background-color: #0056b3;
+    }
 
-        .game-table {
-            width: 100%;
-            max-width: 1000px;
-            margin: 20px auto;
-            background: #ffffff;
-            padding: 10px;
-        }
+    .game-table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 20px auto;
+      background: #ffffff;
+      padding: 10px;
+    }
 
-        .row {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            padding: 8px 0;
-            align-items: center;
-        }
+    .row {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      padding: 8px 0;
+      align-items: center;
+    }
 
-        .date {
-            width: 80px;
-            text-align: center;
-            font-weight: bold;
-            background-color: #f0f0f0;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .date {
+      width: 80px;
+      text-align: center;
+      font-weight: bold;
+      background-color: #f0f0f0;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .bazi-results {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
+    .bazi-results {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
 
-        .bazi-box {
-            flex: 1;
-            height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #e0e7ff;
-            margin: 5px;
-            font-size: 1.5em;
-            font-weight: bold;
-            border-radius: 5px;
-            position: relative;
-            text-align: center;
-        }
+    .bazi-box {
+      flex: 1;
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #e0e7ff;
+      margin: 5px;
+      font-size: 1.5em;
+      font-weight: bold;
+      border-radius: 5px;
+      position: relative;
+      text-align: center;
+    }
 
-        .wallet-container {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 1.2em;
-            display: none;
-            align-items: center;
-            gap: 10px;
-        }
+    .wallet-container {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.2em;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .wallet {
-            font-weight: bold;
-        }
+    .wallet {
+      font-weight: bold;
+    }
 
-        /* Sticky Box Container */
-        .box-container {
-            display: flex;
-            position: sticky;
-            top: 60px;
-            background-color: #f8f9fa;
-            padding: 10px 0;
-            z-index: 999;
-            justify-content: space-around;
-            gap: 10px;
-        }
+    /* Sticky Box Container */
+    .box-container {
+      display: flex;
+      position: sticky;
+      top: 60px;
+      background-color: #f8f9fa;
+      padding: 10px 0;
+      z-index: 999;
+      justify-content: space-around;
+      gap: 10px;
+    }
 
-        .box {
-            background-color: #e0f7fa;
-            padding: 15px 20px;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            width: 100px;
-        }
+    .box {
+      background-color: #e0f7fa;
+      padding: 15px 20px;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      width: 100px;
+    }
 
-        .login-form {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            margin: 15px auto;
-            display: none;
-        }
+    .login-form {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      margin: 15px auto;
+      display: none;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
 
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
 
-        #singleSelect {
-            display: none;
-            margin-top: 10px;
-        }
+    #singleSelect {
+      display: none;
+      margin-top: 10px;
+    }
 
-        #singleSelect button {
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    #singleSelect button {
+      padding: 10px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-        #singleSelect button.selected {
-            background-color: lightblue;
-        }
+    #singleSelect button.selected {
+      background-color: lightblue;
+    }
 
-        #singleSelect input[type="number"] {
-            padding: 10px;
-            margin: 10px 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-    </style>
+    #singleSelect input[type="number"] {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ==== Patti Functionality Styling ==== */
+    /* Patti container styling */
+    #pattiContainer {
+      display: none;
+      margin: 20px auto;
+      max-width: 800px;
+      padding: 15px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Container for Patti number boxes arranged horizontally */
+    #pattiBoxContainer {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    /* Patti number boxes */
+    #pattiBoxContainer .box {
+      background-color: #ffffff;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 10px 15px;
+      font-size: 1.2em;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    #pattiBoxContainer .box:hover {
+      background-color: #e0f7ff;
+      transform: scale(1.05);
+    }
+
+    /* Patti CP controls and other buttons */
+    #pattiContainer div[id^="patti"] {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: lightgray;
+      border: 1px solid black;
+      text-align: center;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    /* Styling for labels and inputs in the Patti container */
+    #pattiContainer label {
+      font-weight: bold;
+    }
+
+    #pattiContainer input[type="number"] {
+      padding: 8px;
+      margin-top: 5px;
+      width: 100px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
 
-    <h1>Game Table Version 3.1</h1>
+  <h1>Game Table Version 3.1</h1>
 
-    <div class="wallet-container" id="walletContainer">
-        <span class="wallet" id="walletDisplay">Wallet: $500</span>
-        <button id="addMoneyButton">Add Money</button>
-    </div>
+  <div class="wallet-container" id="walletContainer">
+    <span class="wallet" id="walletDisplay">Wallet: $500</span>
+    <button id="addMoneyButton">Add Money</button>
+  </div>
 
-    <div class="header">
-        <select id="gameSelector">
-            <option value="kolkataFatafat">Kolkata Fatafat</option>
-            <option value="mainBazar">Main Bazar</option>
-            <option value="gmMatka">GM Matka</option>
-        </select>
-        <button id="playButton">Play</button>
-    </div>
+  <div class="header">
+    <select id="gameSelector">
+      <option value="kolkataFatafat">Kolkata Fatafat</option>
+      <option value="mainBazar">Main Bazar</option>
+      <option value="gmMatka">GM Matka</option>
+    </select>
+    <button id="playButton">Play</button>
+  </div>
 
-    <div class="box-container">
-        <div class="box" id="singleButton">Single</div>
-        <div class="box" id="pattiButton">Patti</div>
-        <div class="box" id="juriButton">Juri</div>
-    </div>
+  <div class="box-container">
+    <div class="box" id="singleButton">Single</div>
+    <div class="box" id="pattiButton">Patti</div>
+    <div class="box" id="juriButton">Juri</div>
+  </div>
 
-    <div class="login-form" id="loginForm">
-        <h2>Login or Signup</h2>
-        <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Enter Username">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter Password">
-        <button id="loginButton">Login/Signup</button>
-    </div>
+  <div class="login-form" id="loginForm">
+    <h2>Login or Signup</h2>
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter Username">
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter Password">
+    <button id="loginButton">Login/Signup</button>
+  </div>
 
-    <div class="game-table" id="gameTable"></div>
-    <div id="singleSelect"></div>
-    
-    <!-- Patti functionality container -->
-    <div id="pattiContainer" style="display: none;"></div>
+  <div class="game-table" id="gameTable"></div>
+  <div id="singleSelect"></div>
 
-    <script src="gameLogic.js"></script>
+  <!-- Patti functionality container -->
+  <div id="pattiContainer" style="display: none;"></div>
+
+  <script src="gameLogic.js"></script>
 </body>
 
 </html>
