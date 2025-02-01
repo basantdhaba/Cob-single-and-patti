@@ -3,13 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let wallet = 500;
     let isLoggedIn = false;
 
-    // Single selection container
+    // For Single selection
     const singleSelectDiv = document.getElementById('singleSelect');
 
     // Variables for Patti functionality
-    let pattiSelectedNumbers = [];  // For normal Patti (3 numbers in ascending order)
-    let cpSelectedNumbers = [];     // For CP mode (minimum 4 required)
-    let pattiStored = [];           // Final stored Patti entries (3-digit strings)
+    let pattiSelectedNumbers = [];  // For normal Patti mode (3 numbers in ascending order)
+    let cpSelectedNumbers = [];     // For CP mode (minimum 4 numbers required)
+    let pattiStored = [];           // Final stored Patti entries (each is a 3-digit string)
     let isCPMode = false;           // Flag for CP mode in Patti area
 
     // ========= Existing Functions =========
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('loginForm').style.display = 'none';
     }
 
-    // ========= Event Listeners for Login and Navigation =========
+    // ========= Event Listeners for Navigation =========
     document.getElementById('playButton').addEventListener('click', showLoginForm);
     document.getElementById('singleButton').addEventListener('click', () => {
         showLoginForm();
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pattiContainer.style.display = 'block';
         pattiContainer.innerHTML = ''; // Clear previous content
 
-        // Build Patti number boxes container
+        // Build Patti number boxes container (arranged horizontally in one line)
         const boxContainer = document.createElement('div');
         boxContainer.id = 'pattiBoxContainer';
         pattiContainer.appendChild(boxContainer);
@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const box = document.createElement('div');
             box.className = 'box';
             box.textContent = i;
+            box.style.userSelect = 'none';
             box.addEventListener('click', () => {
                 pattiNumberClicked(i);
             });
@@ -193,21 +194,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const boxZero = document.createElement('div');
         boxZero.className = 'box';
         boxZero.textContent = '0';
+        boxZero.style.userSelect = 'none';
         boxZero.addEventListener('click', () => {
             pattiNumberClicked(10);
         });
         boxContainer.appendChild(boxZero);
 
+        // Ensure the boxes appear in one horizontal line
+        boxContainer.style.display = 'flex';
+        boxContainer.style.flexWrap = 'nowrap';
+        boxContainer.style.overflowX = 'auto';
+
         // Patti CP Controls
         const cpButton = document.createElement('div');
         cpButton.id = 'pattiCpButton';
         cpButton.textContent = 'CP';
+        cpButton.style.width = '120px';
         cpButton.addEventListener('click', togglePattiCP);
         pattiContainer.appendChild(cpButton);
 
         const cpOkButton = document.createElement('div');
         cpOkButton.id = 'pattiCpOkButton';
         cpOkButton.textContent = 'CP OK';
+        cpOkButton.style.width = '120px';
         cpOkButton.style.display = 'none';
         cpOkButton.addEventListener('click', pattiCpOk);
         pattiContainer.appendChild(cpOkButton);
@@ -242,12 +251,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitButton = document.createElement('div');
         submitButton.id = 'pattiSubmitButton';
         submitButton.textContent = 'Submit';
+        submitButton.style.width = '120px';
         submitButton.addEventListener('click', pattiCalculateTotal);
         pattiContainer.appendChild(submitButton);
 
         const clearButton = document.createElement('div');
         clearButton.id = 'pattiClearButton';
         clearButton.textContent = 'Clear Last Patti';
+        clearButton.style.width = '120px';
         clearButton.addEventListener('click', pattiClearLast);
         pattiContainer.appendChild(clearButton);
 
@@ -290,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         storedDisplay.textContent = 'Stored Pattis: ' + pattiStored.join(', ');
     }
 
-    // Toggle Patti CP mode
+    // Toggle CP mode in Patti area
     function togglePattiCP() {
         const cpButton = document.getElementById('pattiCpButton');
         const cpOkButton = document.getElementById('pattiCpOkButton');
